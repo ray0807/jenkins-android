@@ -1,0 +1,8 @@
+/HelloJenkins/*.iml
+/HelloJenkins/.gradle
+/HelloJenkins/local.properties
+/HelloJenkins/.idea/workspace.xml
+/HelloJenkins/.idea/libraries
+/HelloJenkins/.DS_Store
+/HelloJenkins/build
+/HelloJenkins/captures
