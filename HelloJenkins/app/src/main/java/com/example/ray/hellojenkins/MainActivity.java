@@ -2,11 +2,14 @@ package com.example.ray.hellojenkins;
 
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,10 +38,10 @@ public class MainActivity extends AppCompatActivity {
         body = (EditText) findViewById(R.id.body);
 
         send.setText("Send Mail");
-        userid.setText("364664251@qq.com"); //你的邮箱用户名
-        password.setText("XXXX");         //你的邮箱登陆密码
-        from.setText("364664251@qq.com");//发送的邮箱
-        to.setText("450101585@qq.com"); //发到哪个邮件去
+        userid.setText("wanglei19910523@163.com"); //你的邮箱用户名
+        password.setText("w41615465");         //你的邮箱登陆密码
+        from.setText("wanglei19910523@163.com");//发送的邮箱
+        to.setText("wanglei@feiniu.com"); //发到哪个邮件去
 
         subject.setText("邮件主题，请输入...");
         body.setText("邮件内容，请输入...");
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             // TODO Auto-generated method stub
             try {
                 MailSenderInfo mailInfo = new MailSenderInfo();
-                mailInfo.setMailServerHost("smtp.qq.com");
+                mailInfo.setMailServerHost("smtp.163.com");
                 mailInfo.setMailServerPort("25");
                 mailInfo.setValidate(true);
                 mailInfo.setUserName(userid.getText().toString());  //你的邮箱地址
@@ -68,14 +71,18 @@ public class MainActivity extends AppCompatActivity {
                 mailInfo.setToAddress(to.getText().toString());
                 mailInfo.setSubject(subject.getText().toString());
                 mailInfo.setContent(body.getText().toString());
-                mailInfo.setAttachFileNames(new String[]{"file:///mnt/sdcard/a.jpeg"});
+
+                Log.i("wanglei","1");
+                ZipUtils.zipFolder(Environment.getExternalStorageDirectory()+"/zip",Environment.getExternalStorageDirectory()+"/a.zip");
+                Log.i("wanglei","2");
+                mailInfo.setAttachFileNames(new String[]{Environment.getExternalStorageDirectory()+"/a.zip"});
 
                 //这个类主要来发送邮件
                 SimpleMailSender sms = new SimpleMailSender();
 
-                sms.sendTextMail(mailInfo);//发送文体格式
+//                sms.sendTextMail(mailInfo);//发送文体格式
 
-                //sms.sendHtmlMail(mailInfo);//发送html格式
+                sms.sendHtmlMail(mailInfo);//发送html格式
 
             } catch (Exception e) {
                 Log.e("SendMail", e.getMessage(), e);

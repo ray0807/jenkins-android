@@ -1,115 +1,132 @@
 package com.example.ray.hellojenkins;
-import java.util.Date;    
-import java.util.Properties;   
-import javax.mail.Address;    
-import javax.mail.BodyPart;    
-import javax.mail.Message;    
-import javax.mail.MessagingException;    
-import javax.mail.Multipart;    
-import javax.mail.Session;    
-import javax.mail.Transport;    
-import javax.mail.internet.InternetAddress;    
-import javax.mail.internet.MimeBodyPart;    
-import javax.mail.internet.MimeMessage;    
-import javax.mail.internet.MimeMultipart;
-/**   
- * ¼òµ¥ÓÊ¼ş£¨²»´ø¸½¼şµÄÓÊ¼ş£©·¢ËÍÆ÷   
- */    
-public class SimpleMailSender  
-{    
-	/**   
-	 * ÒÔÎÄ±¾¸ñÊ½·¢ËÍÓÊ¼ş   
-	 * @param mailInfo ´ı·¢ËÍµÄÓÊ¼şµÄĞÅÏ¢   
-	 */    
-	public boolean sendTextMail(MailSenderInfo mailInfo) 
-	{
-		// ÅĞ¶ÏÊÇ·ñĞèÒªÉí·İÈÏÖ¤    
-		MyAuthenticator authenticator = null;    
-		Properties pro = mailInfo.getProperties();   
-		if (mailInfo.isValidate()) 
-		{    
-			// Èç¹ûĞèÒªÉí·İÈÏÖ¤£¬Ôò´´½¨Ò»¸öÃÜÂëÑéÖ¤Æ÷    
-			authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());    
-		}   
-		// ¸ù¾İÓÊ¼ş»á»°ÊôĞÔºÍÃÜÂëÑéÖ¤Æ÷¹¹ÔìÒ»¸ö·¢ËÍÓÊ¼şµÄsession    
-		Session sendMailSession = Session.getDefaultInstance(pro,authenticator);    
-		try 
-		{    
-			// ¸ù¾İsession´´½¨Ò»¸öÓÊ¼şÏûÏ¢    
-			Message mailMessage = new MimeMessage(sendMailSession);    
-			// ´´½¨ÓÊ¼ş·¢ËÍÕßµØÖ·    
-			Address from = new InternetAddress(mailInfo.getFromAddress());    
-			// ÉèÖÃÓÊ¼şÏûÏ¢µÄ·¢ËÍÕß    
-			mailMessage.setFrom(from);    
-			// ´´½¨ÓÊ¼şµÄ½ÓÊÕÕßµØÖ·£¬²¢ÉèÖÃµ½ÓÊ¼şÏûÏ¢ÖĞ    
-			Address to = new InternetAddress(mailInfo.getToAddress());    
-			mailMessage.setRecipient(Message.RecipientType.TO,to);    
-			// ÉèÖÃÓÊ¼şÏûÏ¢µÄÖ÷Ìâ    
-			mailMessage.setSubject(mailInfo.getSubject());    
-			// ÉèÖÃÓÊ¼şÏûÏ¢·¢ËÍµÄÊ±¼ä    
-			mailMessage.setSentDate(new Date());    
-			// ÉèÖÃÓÊ¼şÏûÏ¢µÄÖ÷ÒªÄÚÈİ    
-			String mailContent = mailInfo.getContent();    
-			mailMessage.setText(mailContent);   
-			mailMessage.setFileName(mailInfo.getAttachFileNames()[0]);
-			// ·¢ËÍÓÊ¼ş    
-			Transport.send(mailMessage);   
-			return true;    
-		} 
-		catch (MessagingException ex) 
-		{    
-			ex.printStackTrace();    
-		}    
-		return false;    
-	}    
 
-	/**   
-	 * ÒÔHTML¸ñÊ½·¢ËÍÓÊ¼ş   
-	 * @param mailInfo ´ı·¢ËÍµÄÓÊ¼şĞÅÏ¢   
-	 */    
-	public static boolean sendHtmlMail(MailSenderInfo mailInfo)
-	{    
-		// ÅĞ¶ÏÊÇ·ñĞèÒªÉí·İÈÏÖ¤    
-		MyAuthenticator authenticator = null;   
-		Properties pro = mailInfo.getProperties();   
-		//Èç¹ûĞèÒªÉí·İÈÏÖ¤£¬Ôò´´½¨Ò»¸öÃÜÂëÑéÖ¤Æ÷     
-		if (mailInfo.isValidate()) 
-		{    
-			authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());   
-		}    
-		// ¸ù¾İÓÊ¼ş»á»°ÊôĞÔºÍÃÜÂëÑéÖ¤Æ÷¹¹ÔìÒ»¸ö·¢ËÍÓÊ¼şµÄsession    
-		Session sendMailSession = Session.getDefaultInstance(pro,authenticator);    
-		try {    
-			// ¸ù¾İsession´´½¨Ò»¸öÓÊ¼şÏûÏ¢    
-			Message mailMessage = new MimeMessage(sendMailSession);    
-			// ´´½¨ÓÊ¼ş·¢ËÍÕßµØÖ·    
-			Address from = new InternetAddress(mailInfo.getFromAddress());    
-			// ÉèÖÃÓÊ¼şÏûÏ¢µÄ·¢ËÍÕß    
-			mailMessage.setFrom(from);    
-			// ´´½¨ÓÊ¼şµÄ½ÓÊÕÕßµØÖ·£¬²¢ÉèÖÃµ½ÓÊ¼şÏûÏ¢ÖĞ    
-			Address to = new InternetAddress(mailInfo.getToAddress());    
-			// Message.RecipientType.TOÊôĞÔ±íÊ¾½ÓÊÕÕßµÄÀàĞÍÎªTO    
-			mailMessage.setRecipient(Message.RecipientType.TO,to);    
-			// ÉèÖÃÓÊ¼şÏûÏ¢µÄÖ÷Ìâ    
-			mailMessage.setSubject(mailInfo.getSubject());    
-			// ÉèÖÃÓÊ¼şÏûÏ¢·¢ËÍµÄÊ±¼ä    
-			mailMessage.setSentDate(new Date());    
-			// MiniMultipartÀàÊÇÒ»¸öÈİÆ÷Àà£¬°üº¬MimeBodyPartÀàĞÍµÄ¶ÔÏó    
-			Multipart mainPart = new MimeMultipart();    
-			// ´´½¨Ò»¸ö°üº¬HTMLÄÚÈİµÄMimeBodyPart    
-			BodyPart html = new MimeBodyPart();    
-			// ÉèÖÃHTMLÄÚÈİ    
-			html.setContent(mailInfo.getContent(), "text/html; charset=utf-8");    
-			mainPart.addBodyPart(html);    
-			// ½«MiniMultipart¶ÔÏóÉèÖÃÎªÓÊ¼şÄÚÈİ    
-			mailMessage.setContent(mainPart);    
-			// ·¢ËÍÓÊ¼ş    
-			Transport.send(mailMessage);    
-			return true;    
-		} catch (MessagingException ex) {    
-			ex.printStackTrace();    
-		}    
-		return false;    
-	}    
+import java.util.Date;
+import java.util.Properties;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
+import javax.mail.Address;
+import javax.mail.BodyPart;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
+/**
+ * ç®€å•é‚®ä»¶ï¼ˆä¸å¸¦é™„ä»¶çš„é‚®ä»¶ï¼‰å‘é€å™¨
+ */
+public class SimpleMailSender {
+    /**
+     * ä»¥æ–‡æœ¬æ ¼å¼å‘é€é‚®ä»¶
+     *
+     * @param mailInfo å¾…å‘é€çš„é‚®ä»¶çš„ä¿¡æ¯
+     */
+    public boolean sendTextMail(MailSenderInfo mailInfo) {
+        // åˆ¤æ–­æ˜¯å¦éœ€è¦èº«ä»½è®¤è¯
+        MyAuthenticator authenticator = null;
+        Properties pro = mailInfo.getProperties();
+        if (mailInfo.isValidate()) {
+            // å¦‚æœéœ€è¦èº«ä»½è®¤è¯ï¼Œåˆ™åˆ›å»ºä¸€ä¸ªå¯†ç éªŒè¯å™¨
+            authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());
+        }
+        // æ ¹æ®é‚®ä»¶ä¼šè¯å±æ€§å’Œå¯†ç éªŒè¯å™¨æ„é€ ä¸€ä¸ªå‘é€é‚®ä»¶çš„session
+        Session sendMailSession = Session.getDefaultInstance(pro, authenticator);
+        try {
+            // æ ¹æ®sessionåˆ›å»ºä¸€ä¸ªé‚®ä»¶æ¶ˆæ¯
+            Message mailMessage = new MimeMessage(sendMailSession);
+            // åˆ›å»ºé‚®ä»¶å‘é€è€…åœ°å€
+            Address from = new InternetAddress(mailInfo.getFromAddress());
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯çš„å‘é€è€…
+            mailMessage.setFrom(from);
+            // åˆ›å»ºé‚®ä»¶çš„æ¥æ”¶è€…åœ°å€ï¼Œå¹¶è®¾ç½®åˆ°é‚®ä»¶æ¶ˆæ¯ä¸­
+            Address to = new InternetAddress(mailInfo.getToAddress());
+            mailMessage.setRecipient(Message.RecipientType.TO, to);
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯çš„ä¸»é¢˜
+            mailMessage.setSubject(mailInfo.getSubject());
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯å‘é€çš„æ—¶é—´
+            mailMessage.setSentDate(new Date());
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯çš„ä¸»è¦å†…å®¹
+            String mailContent = mailInfo.getContent();
+            mailMessage.setText(mailContent);
+            mailMessage.setFileName(mailInfo.getAttachFileNames()[0]);
+            // å‘é€é‚®ä»¶
+            Transport.send(mailMessage);
+            return true;
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    /**
+     * ä»¥HTMLæ ¼å¼å‘é€é‚®ä»¶
+     *
+     * @param mailInfo å¾…å‘é€çš„é‚®ä»¶ä¿¡æ¯
+     */
+    public static boolean sendHtmlMail(MailSenderInfo mailInfo) {
+        // åˆ¤æ–­æ˜¯å¦éœ€è¦èº«ä»½è®¤è¯
+        MyAuthenticator authenticator = null;
+        Properties pro = mailInfo.getProperties();
+        //å¦‚æœéœ€è¦èº«ä»½è®¤è¯ï¼Œåˆ™åˆ›å»ºä¸€ä¸ªå¯†ç éªŒè¯å™¨
+        if (mailInfo.isValidate()) {
+            authenticator = new MyAuthenticator(mailInfo.getUserName(), mailInfo.getPassword());
+        }
+        // æ ¹æ®é‚®ä»¶ä¼šè¯å±æ€§å’Œå¯†ç éªŒè¯å™¨æ„é€ ä¸€ä¸ªå‘é€é‚®ä»¶çš„session
+        Session sendMailSession = Session.getDefaultInstance(pro, authenticator);
+        try {
+            // æ ¹æ®sessionåˆ›å»ºä¸€ä¸ªé‚®ä»¶æ¶ˆæ¯
+            Message mailMessage = new MimeMessage(sendMailSession);
+            // åˆ›å»ºé‚®ä»¶å‘é€è€…åœ°å€
+            Address from = new InternetAddress(mailInfo.getFromAddress());
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯çš„å‘é€è€…
+            mailMessage.setFrom(from);
+            // åˆ›å»ºé‚®ä»¶çš„æ¥æ”¶è€…åœ°å€ï¼Œå¹¶è®¾ç½®åˆ°é‚®ä»¶æ¶ˆæ¯ä¸­
+            Address to = new InternetAddress(mailInfo.getToAddress());
+            // Message.RecipientType.TOå±æ€§è¡¨ç¤ºæ¥æ”¶è€…çš„ç±»å‹ä¸ºTO
+            mailMessage.setRecipient(Message.RecipientType.TO, to);
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯çš„ä¸»é¢˜
+            mailMessage.setSubject(mailInfo.getSubject());
+            // è®¾ç½®é‚®ä»¶æ¶ˆæ¯å‘é€çš„æ—¶é—´
+            mailMessage.setSentDate(new Date());
+            // MiniMultipartç±»æ˜¯ä¸€ä¸ªå®¹å™¨ç±»ï¼ŒåŒ…å«MimeBodyPartç±»å‹çš„å¯¹è±¡
+            Multipart mainPart = new MimeMultipart();
+            // åˆ›å»ºä¸€ä¸ªåŒ…å«HTMLå†…å®¹çš„MimeBodyPart
+            BodyPart html = new MimeBodyPart();
+            // è®¾ç½®HTMLå†…å®¹
+            html.setContent(mailInfo.getContent(), "text/html; charset=utf-8");
+            mainPart.addBodyPart(html);
+
+
+            int i = 0;
+            // æ·»åŠ é‚®ä»¶é™„ä»¶
+            if (mailInfo.getAttachFileNames() != null && mailInfo.getAttachFileNames().length > 0) {
+                for (String filePath : mailInfo.getAttachFileNames()) {
+                    MimeBodyPart attachPart = new MimeBodyPart();
+                    DataSource source = new FileDataSource(filePath);
+                    attachPart.setDataHandler(new DataHandler(source));
+//                    attachPart.setFileName(filePath);
+                    attachPart.setFileName("log" + i);
+                    i++;
+                    mainPart.addBodyPart(attachPart);
+                }
+            }
+
+
+            // å°†MiniMultipartå¯¹è±¡è®¾ç½®ä¸ºé‚®ä»¶å†…å®¹
+            mailMessage.setContent(mainPart);
+            // å‘é€é‚®ä»¶
+            Transport.send(mailMessage);
+            return true;
+        } catch (MessagingException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
 
 }
