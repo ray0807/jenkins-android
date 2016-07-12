@@ -37,15 +37,13 @@ public class MainActivity extends AppCompatActivity {
         subject = (EditText) findViewById(R.id.subject);
         body = (EditText) findViewById(R.id.body);
 
-        send.setText("Send Mail");
+        send.setText("发送log测试报告");
         userid.setText("wanglei19910523@163.com"); //你的邮箱用户名
-        password.setText("w41615465");         //你的邮箱登陆密码
+        password.setText("");         //你的邮箱登陆密码
         from.setText("wanglei19910523@163.com");//发送的邮箱
         to.setText("wanglei@feiniu.com"); //发到哪个邮件去
-
-        subject.setText("邮件主题，请输入...");
-        body.setText("邮件内容，请输入...");
-
+        subject.setText("测试log发送");
+        body.setText("测试log发送");
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
                 MailSenderInfo mailInfo = new MailSenderInfo();
                 mailInfo.setMailServerHost("smtp.163.com");
                 mailInfo.setMailServerPort("25");
+
                 mailInfo.setValidate(true);
                 mailInfo.setUserName(userid.getText().toString());  //你的邮箱地址
                 mailInfo.setPassword(password.getText().toString());//您的邮箱密码
@@ -72,21 +71,31 @@ public class MainActivity extends AppCompatActivity {
                 mailInfo.setSubject(subject.getText().toString());
                 mailInfo.setContent(body.getText().toString());
 
-                Log.i("wanglei","1");
-                ZipUtils.zipFolder(Environment.getExternalStorageDirectory()+"/zip",Environment.getExternalStorageDirectory()+"/a.zip");
-                Log.i("wanglei","2");
-                mailInfo.setAttachFileNames(new String[]{Environment.getExternalStorageDirectory()+"/a.zip"});
-
+                File file1 = new File(Environment.getExternalStorageDirectory() + "/zip");
+                if (!file1.exists()) {
+                    file1.mkdir();
+                }
+                File file2 = new File(Environment.getExternalStorageDirectory() + "/zip/upload");
+                if (!file2.exists()) {
+                    file2.mkdir();
+                }
+                File file3 = new File(Environment.getExternalStorageDirectory() + "/zip/fnlog.zip");
+                if (file3.exists()) {
+                    file3.delete();
+                }
+                ZipUtils.zipFolder(Environment.getExternalStorageDirectory() + "/zip/upload", Environment.getExternalStorageDirectory() + "/zip/fnlog.zip");
+                mailInfo.setAttachFileNames(new String[]{Environment.getExternalStorageDirectory() + "/zip/fnlog.zip"});
                 //这个类主要来发送邮件
                 SimpleMailSender sms = new SimpleMailSender();
-
 //                sms.sendTextMail(mailInfo);//发送文体格式
+//                sms.sendHtmlMail(mailInfo);//发送html格式
 
-                sms.sendHtmlMail(mailInfo);//发送html格式
 
+                sms.sendMultipleEmail(mailInfo);
             } catch (Exception e) {
-                Log.e("SendMail", e.getMessage(), e);
+                Log.e("wanglei", e.getMessage(), e);
             }
         }
     }
+
 }
